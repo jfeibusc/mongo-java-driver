@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.*;
 
 /**
  * keeps replica set status
@@ -67,6 +68,26 @@ public class ReplicaSetStatus {
     public String getName() {
         return _setName;
     }
+
+    @Override
+     public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{replSetName: '").append(_setName);
+        sb.append("', closed:");
+        sb.append(_closed);
+        sb.append(",slaveAcceptableLatencyMS: ").append(slaveAcceptableLatencyMS);
+        sb.append(", ");
+        sb.append("nextResolveTime:'").append(new Date(_nextResolveTime).toString()).append("', ");
+        sb.append("members : [ ");
+        if (_all != null) {
+            for (Node node : _all)
+                sb.append(node._addr).append(",");
+            sb.setLength(sb.length() - 1); //remove last comma
+        }
+        sb.append("] ");
+
+        return sb.toString();
+     }
 
     void _checkClosed(){
         if ( _closed )
@@ -123,7 +144,8 @@ public class ReplicaSetStatus {
             long diff = best._pingTime - n._pingTime;
             if ( diff > slaveAcceptableLatencyMS ||
                  // this is a complex way to make sure we get a random distribution of slaves
-                 ( ( badBeforeBest - mybad ) / ( _all.size() - 1 ) ) > _random.nextDouble() )
+//                 ( ( badBeforeBest - mybad ) / ( _all.size() - 1 ) ) > _random.nextDouble() )
+                 ( ( badBeforeBest - mybad ) / ( _all.size() - 1 ) ) > _random.nextDouble()  && diff > -1*slaveAcceptableLatencyMS )
                 {
                 best = n;
                 badBeforeBest = mybad;

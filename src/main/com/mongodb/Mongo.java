@@ -381,7 +381,7 @@ public class Mongo {
      * @return
      */
     public String getVersion(){
-        return MAJOR_VERSION + "." + MINOR_VERSION;
+        return MAJOR_VERSION + "." + MINOR_VERSION + "(JohnF latency patch 1)";
     }
 
     /**
